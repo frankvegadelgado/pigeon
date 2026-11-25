@@ -88,25 +88,31 @@ CHALLENGE_LINE_WARN = 950
 
 
 def check_challenge_cap(root: Path) -> bool:
-    """The configured Challenge source has a hard cap of 1,000 lines at Palomar."""
+    """Every Lean source file must stay within 1,000 lines.
+
+    The configured Challenge source has a hard cap of 1,000 lines at Palomar; the same
+    limit is applied to all other Lean files so that none of them can grow past it.
+    """
+    failed = False
     config = root / "comparator.json"
-    if not config.is_file():
-        return False
-    module = json.loads(config.read_text(encoding="utf-8")).get("challenge_module")
-    if not module:
-        return False
-    path = root / (module.replace(".", "/") + ".lean")
-    if not path.is_file():
-        print(f"{path.name}: configured challenge source not found")
-        return True
-    lines = physical_lines(path.read_bytes().decode("utf-8"))
-    if lines > CHALLENGE_LINE_CAP:
-        print(f"{path.name}: {lines} lines exceed the {CHALLENGE_LINE_CAP}-line cap of the "
-              "configured challenge source; keep only what the compared statements need")
-        return True
-    if lines > CHALLENGE_LINE_WARN:
-        print(f"{path.name}: {lines} lines, close to the {CHALLENGE_LINE_CAP}-line cap")
-    return False
+    if config.is_file():
+        module = json.loads(config.read_text(encoding="utf-8")).get("challenge_module")
+        if module and not (root / (module.replace(".", "/") + ".lean")).is_file():
+            print(f"{module}: configured challenge source not found")
+            failed = True
+    for path in lean_source_files(root):
+        if path.is_symlink():
+            continue
+        relative = path.relative_to(root)
+        lines = physical_lines(path.read_bytes().decode("utf-8", errors="replace"))
+        if lines > CHALLENGE_LINE_CAP:
+            print(f"{relative}: {lines} lines exceed the {CHALLENGE_LINE_CAP}-line cap; "
+                  "split it into smaller modules (the configured challenge source keeps "
+                  "only what the compared statements need)")
+            failed = True
+        elif lines > CHALLENGE_LINE_WARN:
+            print(f"{relative}: {lines} lines, close to the {CHALLENGE_LINE_CAP}-line cap")
+    return failed
 
 
 def main() -> int:

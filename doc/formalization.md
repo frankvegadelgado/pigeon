@@ -45,7 +45,7 @@ The development builds with Lean `v4.35.0-rc2` and the Mathlib tag `v4.35.0-rc2`
 * `centered_of_partition`: for `N ≥ 4`, primes `p, q` with `p + q = 2N` and `p < N` give an element of `C N ∩ D N` (the step of Proposition `prop:verified`).
 * `small_cases`: `C N ∩ D N` is nonempty for `4 ≤ N ≤ 12`.
 
-`comparator.json` lists the public versions of these theorems (namespace `PigeonGoldbach.Public`); `Challenge.lean` imports only Mathlib and `Solution.lean` proves the same statements from the project module. `Challenge.lean` contains only the definitions and lemmas that the compared statements need, because Palomar caps the configured challenge source at 1,000 lines; `scripts/check-lean-sources.py` fails when it exceeds the cap.
+`comparator.json` lists the public versions of these theorems (namespace `PigeonGoldbach.Public`); `Challenge.lean` imports only Mathlib and `Solution.lean` proves the same statements from the project module. `Challenge.lean` contains only the definitions and lemmas that the compared statements need, because Palomar caps the configured challenge source at 1,000 lines; `scripts/check-lean-sources.py` fails when it, or any other Lean file, exceeds 1,000 lines.
 
 ## Taken from the literature
 

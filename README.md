@@ -1,4 +1,4 @@
-# Pigeon: nested squares and distinct-prime Goldbach partitions
+# PigeonGoldbach: nested squares and distinct-prime Goldbach partitions
 
 Lean 4 formalization for *Nested Squares and Distinct-Prime Goldbach Partitions* (`doc/paper.tex`). `formalization.yaml` is the machine-readable inventory; this file explains it.
 

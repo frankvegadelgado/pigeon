@@ -45,7 +45,7 @@ The development builds with Lean `v4.35.0-rc2` and the Mathlib tag `v4.35.0-rc2`
 * `centered_of_partition`: for `N ≥ 4`, primes `p, q` with `p + q = 2N` and `p < N` give an element of `C N ∩ D N` (the step of Proposition `prop:verified`).
 * `small_cases`: `C N ∩ D N` is nonempty for `4 ≤ N ≤ 12`.
 
-`comparator.json` lists the public versions of these theorems (namespace `PigeonGoldbach.Public`); `Challenge.lean` imports only Mathlib and `Solution.lean` proves the same statements from the project module. `Challenge.lean` contains only the definitions and lemmas that the compared statements need, because Palomar caps the configured challenge source at 1,000 lines; `scripts/check-lean-sources.py` fails when it, or any other Lean file, exceeds 1,000 lines.
+`comparator.json` lists the public versions (namespace `PigeonGoldbach.Public`) of `geometric_equivalence`, `centered_intersection_criterion`, `CD_subset_E`, `CED_eq_CD`, `C_D_subset_B`, `gap_lower`, `gap_lower_missing`, `gap_top`, `gap_top_missing`, `pigeonhole_CE`, `card_C`, `card_E_ge`, `mem_E_shift`, `centered_of_partition`, `small_cases`, `H_pos_iff`, `card_C_le_CE_add`, `card_CE_le`, `mem_E_of_pair`, `card_E_ge_Ioo`, `pigeonhole_CE_of_H`, `gap_card_missing`, `gap_card_consecutive` and `cramer_bound`; `Challenge.lean` imports only Mathlib and contains only the definitions and lemmas that these statements need, and `Solution.lean` proves the same statements from the project module. The other public theorems of `Solution.lean` are proved in the project modules and are not in the comparator selection.
 
 ## Taken from the literature
 

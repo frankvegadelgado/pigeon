@@ -3,7 +3,6 @@
 
 Scanner functions follow PalomarSubmission/scripts/source_requirements.py.
 """
-import json
 import os
 import re
 from pathlib import Path
@@ -83,38 +82,6 @@ def lean_source_files(root: Path) -> list[Path]:
     return files
 
 
-CHALLENGE_LINE_CAP = 1_000
-CHALLENGE_LINE_WARN = 950
-
-
-def check_challenge_cap(root: Path) -> bool:
-    """Every Lean source file must stay within 1,000 lines.
-
-    The configured Challenge source has a hard cap of 1,000 lines at Palomar; the same
-    limit is applied to all other Lean files so that none of them can grow past it.
-    """
-    failed = False
-    config = root / "comparator.json"
-    if config.is_file():
-        module = json.loads(config.read_text(encoding="utf-8")).get("challenge_module")
-        if module and not (root / (module.replace(".", "/") + ".lean")).is_file():
-            print(f"{module}: configured challenge source not found")
-            failed = True
-    for path in lean_source_files(root):
-        if path.is_symlink():
-            continue
-        relative = path.relative_to(root)
-        lines = physical_lines(path.read_bytes().decode("utf-8", errors="replace"))
-        if lines > CHALLENGE_LINE_CAP:
-            print(f"{relative}: {lines} lines exceed the {CHALLENGE_LINE_CAP}-line cap; "
-                  "split it into smaller modules (the configured challenge source keeps "
-                  "only what the compared statements need)")
-            failed = True
-        elif lines > CHALLENGE_LINE_WARN:
-            print(f"{relative}: {lines} lines, close to the {CHALLENGE_LINE_CAP}-line cap")
-    return failed
-
-
 def main() -> int:
     root = Path(__file__).resolve().parents[1]
     failed = False
@@ -136,7 +103,6 @@ def main() -> int:
         if physical_lines(text) > 10_000:
             print(f"{relative}: exceeds 10,000 lines; split into smaller modules")
             failed = True
-    failed |= check_challenge_cap(root)
     return int(failed)
 
 

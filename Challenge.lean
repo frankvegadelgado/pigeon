@@ -212,6 +212,8 @@ theorem gap_top_missing {N q M : ℕ}
   have := gap_top hmax hE
   omega
 
+
+/-- The pigeonhole step of Proposition `prop:pigeonhole-CE`. -/
 theorem pigeonhole_core {α : Type*} [DecidableEq α] {S T U : Finset α}
     (hT : T ⊆ S) (h : (S \ U).card < T.card) : (T ∩ U).Nonempty := by
   by_contra hne
@@ -228,9 +230,12 @@ theorem pigeonhole_core {α : Type*} [DecidableEq α] {S T U : Finset α}
 
 theorem C_subset_A (N : ℕ) : C N ⊆ A N := fun _ hM => mem_A.2 (mem_C.1 hM).1
 
+/-- Proposition `prop:pigeonhole-CE`, combinatorial form: if `|A_N \ E_N| < |C_N|`
+then `C_N ∩ E_N` is nonempty. -/
 theorem pigeonhole_CE (N : ℕ) (h : (A N \ E N).card < (C N).card) : (C N ∩ E N).Nonempty :=
   pigeonhole_core (C_subset_A N) h
 
+/-- The map `M ↦ N - M` is a bijection from `C_N` onto the primes `P` with `3 ≤ P ≤ N - 1`. -/
 theorem card_C (N : ℕ) :
     (C N).card = ((Finset.Icc 3 (N - 1)).filter Nat.Prime).card := by
   refine Finset.card_nbij' (fun M => N - M) (fun P => N - P) ?_ ?_ ?_ ?_
@@ -261,6 +266,8 @@ theorem card_C (N : ℕ) :
     show N - (N - P) = P
     omega
 
+/-- Corollary `cor:half-difference-baseline`, combinatorial form: every prime `Q` with
+`N < Q ≤ 2N - 3` gives the distinct element `(Q - 3) / 2` of `E_N`. -/
 theorem card_E_ge {N : ℕ} (hN : 4 ≤ N) :
     ((Finset.Ioc N (2 * N - 3)).filter Nat.Prime).card ≤ (E N).card := by
   refine Finset.card_le_card_of_injOn (fun Q => (Q - 3) / 2) ?_ ?_
@@ -284,6 +291,8 @@ theorem card_E_ge {N : ℕ} (hN : 4 ≤ N) :
     have o2 := odd_of_prime_gt bp (by omega)
     omega
 
+/-- Corollary `cor:goldbach-diff`, second statement: for a prime `3 ≤ P < N`, the value
+`N - P` lies in `E_N` iff `Q' = (2N - P) + (P' - P)` for primes `2 < P' < N < Q' < 2N`. -/
 theorem mem_E_shift {N P : ℕ} (hP3 : 3 ≤ P) (hPN : P < N) :
     (N - P) ∈ E N ↔ ∃ P' Q' : ℕ, P'.Prime ∧ Q'.Prime ∧ 2 < P' ∧ P' < N ∧ N < Q' ∧
       Q' < 2 * N ∧ Q' + 2 * P = 2 * N + P' := by
@@ -294,6 +303,8 @@ theorem mem_E_shift {N P : ℕ} (hP3 : 3 ≤ P) (hPN : P < N) :
   · rintro ⟨P', Q', h1, h2, h3, h4, h5, h6, h7⟩
     exact ⟨⟨by omega, by omega⟩, P', Q', h1, h2, h3, h4, h5, h6, by omega⟩
 
+/-- The step of Proposition `prop:verified`: a partition `2N = p + q` with `p < N` gives
+an element of `C_N ∩ D_N`. -/
 theorem centered_of_partition {N p q : ℕ} (hN : 4 ≤ N) (hp : p.Prime) (hq : q.Prime)
     (hs : p + q = 2 * N) (hlt : p < N) : (C N ∩ D N).Nonempty := by
   have hpq : p < q := by omega
@@ -302,6 +313,7 @@ theorem centered_of_partition {N p q : ℕ} (hN : 4 ≤ N) (hp : p.Prime) (hq : 
   rw [Finset.mem_inter, mem_C, mem_D]
   exact ⟨⟨⟨a, b⟩, c⟩, ⟨⟨a, b⟩, d⟩⟩
 
+/-- The small cases of Section `subsec:small`: `C_N ∩ D_N ≠ ∅` for `4 ≤ N ≤ 12`. -/
 theorem small_cases {N : ℕ} (h1 : 4 ≤ N) (h2 : N ≤ 12) : (C N ∩ D N).Nonempty := by
   have key : ∀ M : ℕ, 1 ≤ M → M ≤ N - 3 → (N - M).Prime → (N + M).Prime →
       (C N ∩ D N).Nonempty := by
@@ -324,6 +336,7 @@ theorem small_cases {N : ℕ} (h1 : 4 ≤ N) (h2 : N ≤ 12) : (C N ∩ D N).Non
 noncomputable def H (N : ℕ) : ℝ :=
   Real.log (2 * (N : ℝ)) ^ 2 - (((N : ℝ) - 3) - (E N).card)
 
+/-- `H(N) > 0` holds exactly when fewer than `log²(2N)` values of `A_N` are missing from `E_N`. -/
 theorem H_pos_iff {N : ℕ} (hN : 3 ≤ N) :
     0 < H N ↔ ((A N \ E N).card : ℝ) < Real.log (2 * (N : ℝ)) ^ 2 := by
   have hsub : E N ⊆ A N := Finset.filter_subset _ _
@@ -342,6 +355,7 @@ theorem H_pos_iff {N : ℕ} (hN : 3 ≤ N) :
   unfold H
   constructor <;> intro h <;> linarith
 
+/-- Corollary `cor:goldbach-diff`, counting form: `|C_N| ≤ |C_N ∩ E_N| + |A_N \ E_N|`. -/
 theorem card_C_le_CE_add (N : ℕ) :
     (C N).card ≤ (C N ∩ E N).card + (A N \ E N).card := by
   have hsub : C N ⊆ (C N ∩ E N) ∪ (A N \ E N) := by
@@ -351,9 +365,12 @@ theorem card_C_le_CE_add (N : ℕ) :
     · exact Finset.mem_union_right _ (Finset.mem_sdiff.2 ⟨C_subset_A N hM, hE⟩)
   exact (Finset.card_le_card hsub).trans (Finset.card_union_le _ _)
 
+/-- Corollary `cor:goldbach-diff`: `|C_N ∩ E_N| ≤ |C_N|`. -/
 theorem card_CE_le (N : ℕ) : (C N ∩ E N).card ≤ (C N).card :=
   Finset.card_le_card Finset.inter_subset_left
 
+/-- Section `subsec:upper-prime-count`: every pair of primes `3 ≤ P < N < Q ≤ 2N - 3`
+gives the half-difference `(Q - P) / 2 ∈ E_N`. -/
 theorem mem_E_of_pair {N P Q : ℕ} (hP : P.Prime) (hQ : Q.Prime) (hP3 : 3 ≤ P)
     (hPN : P < N) (hNQ : N < Q) (hQ3 : Q + 3 ≤ 2 * N) : (Q - P) / 2 ∈ E N := by
   have h1 := odd_of_prime_gt hP (by omega)
@@ -361,6 +378,8 @@ theorem mem_E_of_pair {N P Q : ℕ} (hP : P.Prime) (hQ : Q.Prime) (hP3 : 3 ≤ P
   rw [mem_E]
   exact ⟨⟨by omega, by omega⟩, P, Q, hP, hQ, by omega, hPN, hNQ, by omega, by omega⟩
 
+/-- Corollary `cor:half-difference-baseline`: the primes in `(N, 2N)` number at most
+`|E_N| + 1`. -/
 theorem card_E_ge_Ioo {N : ℕ} (hN : 4 ≤ N) :
     ((Finset.Ioo N (2 * N)).filter Nat.Prime).card ≤ (E N).card + 1 := by
   have hsub : (Finset.Ioo N (2 * N)).filter Nat.Prime ⊆
@@ -381,11 +400,16 @@ theorem card_E_ge_Ioo {N : ℕ} (hN : 4 ≤ N) :
     _ ≤ ((Finset.Ioc N (2 * N - 3)).filter Nat.Prime).card + 1 := Finset.card_insert_le _ _
     _ ≤ (E N).card + 1 := Nat.add_le_add_right (card_E_ge hN) 1
 
+/-- Proposition `prop:pigeonhole-CE` with the statistic `H`: if `H(N) > 0` and
+`|C_N| > log²(2N)` then `C_N ∩ E_N` is nonempty. -/
 theorem pigeonhole_CE_of_H {N : ℕ} (hN : 3 ≤ N) (hH : 0 < H N)
     (hC : Real.log (2 * (N : ℝ)) ^ 2 < (C N).card) : (C N ∩ E N).Nonempty := by
   have h := (H_pos_iff hN).1 hH
   exact pigeonhole_CE N (Nat.cast_lt.1 (lt_trans h hC))
 
+/-- Lemma `lem:gap` and Theorem `thm:cramer`, counting form: if `p⁻` is the largest prime
+below `N` and `p⁺` the smallest above `N`, with `p⁺ - p⁻ + 4 ≤ 2N`, then at least
+`(p⁺ - p⁻)/2 - 1` values of `A_N` are missing from `E_N`. -/
 theorem gap_card_missing {N pm pp : ℕ}
     (hbelow : ∀ P : ℕ, P.Prime → P < N → P ≤ pm)
     (habove : ∀ Q : ℕ, Q.Prime → N < Q → pp ≤ Q)
@@ -399,6 +423,8 @@ theorem gap_card_missing {N pm pp : ℕ}
   rw [Nat.card_Icc] at this
   omega
 
+/-- Theorem `thm:cramer`, finite form: for consecutive primes `p < p'` with `3 ≤ p`
+(no prime strictly between them), `p' - p ≤ 2 |A_{p+1} \ E_{p+1}| + 2`. -/
 theorem gap_card_consecutive {p p' : ℕ} (hp3 : 3 ≤ p) (hpp : p < p')
     (hcons : ∀ r : ℕ, p < r → r < p' → ¬ r.Prime) :
     p' - p ≤ 2 * (A (p + 1) \ E (p + 1)).card + 2 := by
@@ -413,6 +439,8 @@ theorem gap_card_consecutive {p p' : ℕ} (hp3 : 3 ≤ p) (hpp : p < p')
     by_contra h
     exact hcons Q (by omega) (by omega) hQ
 
+/-- Theorem `thm:cramer`: if `H(p + 1) > 0` for consecutive primes `p < p'` with `3 ≤ p`,
+then `p' - p < 2 log²(2p + 2) + 2`. -/
 theorem cramer_bound {p p' : ℕ} (hp3 : 3 ≤ p) (hpp : p < p')
     (hcons : ∀ r : ℕ, p < r → r < p' → ¬ r.Prime) (hH : 0 < H (p + 1)) :
     (p' : ℝ) - p < 2 * Real.log (2 * (p : ℝ) + 2) ^ 2 + 2 := by
@@ -427,313 +455,11 @@ theorem cramer_bound {p p' : ℕ} (hp3 : 3 ≤ p) (hpp : p < p')
     exact_mod_cast h3
   linarith
 
-/-- `R(2N) = |C_N ∩ D_N|`, the number of centered Goldbach partitions of `2N`. -/
-noncomputable def R (N : ℕ) : ℕ := (C N ∩ D N).card
-
-/-- The odd primes `p ≤ n`. -/
-noncomputable def oddPrimes (n : ℕ) : Finset ℕ := (Finset.Icc 3 n).filter Nat.Prime
-
-/-- `T = ∑_{4 ≤ N ≤ X} R(2N)` of Theorem `thm:positive-proportion`. -/
-noncomputable def Tsum (X : ℕ) : ℕ := ∑ N ∈ Finset.Icc 4 X, R N
-
-/-- `V = ∑_{4 ≤ N ≤ X} R(2N)²` of Theorem `thm:positive-proportion`. -/
-noncomputable def Vsum (X : ℕ) : ℕ := ∑ N ∈ Finset.Icc 4 X, R N ^ 2
-
-/-- The number of `N` with `4 ≤ N ≤ X` and `R(2N) ≥ 1`. -/
-noncomputable def cnt (X : ℕ) : ℕ := ((Finset.Icc 4 X).filter fun N => 1 ≤ R N).card
-
-theorem cs_count (X : ℕ) : Tsum X ^ 2 ≤ cnt X * Vsum X := by
-  unfold Tsum Vsum cnt
-  have hT : ∑ N ∈ Finset.Icc 4 X, R N =
-      ∑ N ∈ (Finset.Icc 4 X).filter (fun N => 1 ≤ R N), R N := by
-    symm
-    apply Finset.sum_filter_of_ne
-    intro N _ hN
-    omega
-  have hV : ∑ N ∈ Finset.Icc 4 X, R N ^ 2 =
-      ∑ N ∈ (Finset.Icc 4 X).filter (fun N => 1 ≤ R N), R N ^ 2 := by
-    symm
-    apply Finset.sum_filter_of_ne
-    intro N _ hN
-    exact Nat.one_le_iff_ne_zero.2 (fun h => hN (by rw [h]; norm_num))
-  rw [hT, hV]
-  have key := Finset.sum_mul_sq_le_sq_mul_sq
-    ((Finset.Icc 4 X).filter (fun N => 1 ≤ R N)) (fun _ => (1 : ℝ)) (fun N => (R N : ℝ))
-  simp only [one_mul, one_pow, Finset.sum_const, nsmul_eq_mul, mul_one] at key
-  have key2 : (((∑ N ∈ (Finset.Icc 4 X).filter (fun N => 1 ≤ R N), R N : ℕ)) : ℝ) ^ 2 ≤
-      (((Finset.Icc 4 X).filter (fun N => 1 ≤ R N)).card : ℝ) *
-        ((∑ N ∈ (Finset.Icc 4 X).filter (fun N => 1 ≤ R N), R N ^ 2 : ℕ) : ℝ) := by
-    push_cast
-    exact key
-  exact_mod_cast key2
-
-theorem T_ge_pairs (X : ℕ) :
-    (((oddPrimes X) ×ˢ (oddPrimes X)).filter (fun x : ℕ × ℕ => x.1 < x.2)).card ≤ Tsum X := by
-  have hcard : ((Finset.Icc 4 X).sigma fun N => C N ∩ D N).card = Tsum X := by
-    rw [Finset.card_sigma]
-    simp only [Tsum, R]
-  rw [← hcard]
-  refine Finset.card_le_card_of_injOn
-    (fun x : ℕ × ℕ => (⟨(x.1 + x.2) / 2, (x.2 - x.1) / 2⟩ : Σ _ : ℕ, ℕ)) ?_ ?_
-  · rintro ⟨p, q⟩ hx
-    simp only [Finset.mem_coe, Finset.mem_filter, Finset.mem_product, oddPrimes,
-      Finset.mem_Icc] at hx
-    obtain ⟨⟨⟨⟨h1, h2⟩, hp⟩, ⟨⟨h3, h4⟩, hq⟩⟩, hlt⟩ := hx
-    have ho1 := odd_of_prime_gt hp (by omega)
-    have ho2 := odd_of_prime_gt hq (by omega)
-    have e1 : (p + q) / 2 - (q - p) / 2 = p := by omega
-    have e2 : (p + q) / 2 + (q - p) / 2 = q := by omega
-    have hmem : (⟨(p + q) / 2, (q - p) / 2⟩ : Σ _ : ℕ, ℕ) ∈
-        (Finset.Icc 4 X).sigma (fun N => C N ∩ D N) := by
-      simp only [Finset.mem_sigma, Finset.mem_Icc, Finset.mem_inter, mem_C, mem_D]
-      refine ⟨⟨by omega, by omega⟩, ⟨⟨by omega, by omega⟩, ?_⟩, ⟨⟨by omega, by omega⟩, ?_⟩⟩
-      · rw [e1]; exact hp
-      · rw [e2]; exact hq
-    exact hmem
-  · rintro ⟨p, q⟩ hx ⟨p', q'⟩ hx' heq
-    simp only [Finset.mem_coe, Finset.mem_filter, Finset.mem_product, oddPrimes,
-      Finset.mem_Icc] at hx hx'
-    obtain ⟨⟨⟨⟨h1, h2⟩, hp⟩, ⟨⟨h3, h4⟩, hq⟩⟩, hlt⟩ := hx
-    obtain ⟨⟨⟨⟨h1', h2'⟩, hp'⟩, ⟨⟨h3', h4'⟩, hq'⟩⟩, hlt'⟩ := hx'
-    have ho1 := odd_of_prime_gt hp (by omega)
-    have ho2 := odd_of_prime_gt hq (by omega)
-    have ho1' := odd_of_prime_gt hp' (by omega)
-    have ho2' := odd_of_prime_gt hq' (by omega)
-    simp only [Sigma.mk.inj_iff, heq_eq_eq] at heq
-    obtain ⟨e1, e2⟩ := heq
-    rw [Prod.mk.injEq]
-    constructor <;> omega
-
-theorem card_lt_pairs (s : Finset ℕ) :
-    2 * ((s ×ˢ s).filter (fun x : ℕ × ℕ => x.1 < x.2)).card + s.card = s.card ^ 2 := by
-  have hFU : (s ×ˢ s).filter (fun x : ℕ × ℕ => x.1 < x.2) ⊆ s ×ˢ s :=
-    Finset.filter_subset _ _
-  have hGUF : (s ×ˢ s).filter (fun x : ℕ × ℕ => x.2 < x.1) ⊆
-      (s ×ˢ s) \ (s ×ˢ s).filter (fun x : ℕ × ℕ => x.1 < x.2) := by
-    intro x hx
-    rw [Finset.mem_filter] at hx
-    rw [Finset.mem_sdiff, Finset.mem_filter]
-    exact ⟨hx.1, fun h => by have h1 := h.2; have h2 := hx.2; omega⟩
-  have hdiag : ((s ×ˢ s) \ (s ×ˢ s).filter (fun x : ℕ × ℕ => x.1 < x.2)) \
-      (s ×ˢ s).filter (fun x : ℕ × ℕ => x.2 < x.1) = s.diag := by
-    ext ⟨a, b⟩
-    simp only [Finset.mem_sdiff, Finset.mem_filter, Finset.mem_product, Finset.mem_diag]
-    constructor
-    · rintro ⟨⟨⟨ha, hb⟩, h1⟩, h2⟩
-      refine ⟨ha, ?_⟩
-      by_contra hne
-      rcases Nat.lt_or_gt_of_ne hne with h | h
-      · exact h1 ⟨⟨ha, hb⟩, h⟩
-      · exact h2 ⟨⟨ha, hb⟩, h⟩
-    · rintro ⟨ha, rfl⟩
-      exact ⟨⟨⟨ha, ha⟩, fun h => lt_irrefl _ h.2⟩, fun h => lt_irrefl _ h.2⟩
-  have hswap : ((s ×ˢ s).filter (fun x : ℕ × ℕ => x.2 < x.1)).card =
-      ((s ×ˢ s).filter (fun x : ℕ × ℕ => x.1 < x.2)).card := by
-    refine Finset.card_nbij' Prod.swap Prod.swap ?_ ?_ ?_ ?_
-    · intro x hx
-      simp only [Finset.mem_coe, Finset.mem_filter, Finset.mem_product, Prod.fst_swap,
-        Prod.snd_swap] at hx ⊢
-      exact ⟨⟨hx.1.2, hx.1.1⟩, hx.2⟩
-    · intro x hx
-      simp only [Finset.mem_coe, Finset.mem_filter, Finset.mem_product, Prod.fst_swap,
-        Prod.snd_swap] at hx ⊢
-      exact ⟨⟨hx.1.2, hx.1.1⟩, hx.2⟩
-    · intro x _
-      exact Prod.swap_swap x
-    · intro x _
-      exact Prod.swap_swap x
-  have h1 := Finset.card_sdiff_add_card_eq_card hGUF
-  have h2 := Finset.card_sdiff_add_card_eq_card hFU
-  rw [hdiag, Finset.diag_card] at h1
-  have h3 : (s ×ˢ s).card = s.card ^ 2 := by
-    rw [Finset.card_product]
-    ring
-  rw [hswap] at h1
-  linarith
-
-theorem V_le_quad (X : ℕ) :
-    Vsum X ≤ (((((oddPrimes X) ×ˢ (oddPrimes (2 * X))) ×ˢ
-      ((oddPrimes X) ×ˢ (oddPrimes (2 * X)))).filter
-        (fun x : (ℕ × ℕ) × (ℕ × ℕ) => x.1.1 + x.1.2 = x.2.1 + x.2.2))).card := by
-  have hcard : ((Finset.Icc 4 X).sigma fun N => (C N ∩ D N) ×ˢ (C N ∩ D N)).card =
-      Vsum X := by
-    rw [Finset.card_sigma]
-    simp only [Finset.card_product, Vsum, R, sq]
-  rw [← hcard]
-  refine Finset.card_le_card_of_injOn
-    (fun x : (Σ _ : ℕ, ℕ × ℕ) =>
-      ((x.1 - x.2.1, x.1 + x.2.1), (x.1 - x.2.2, x.1 + x.2.2))) ?_ ?_
-  · rintro ⟨N, M, M'⟩ hx
-    simp only [Finset.mem_coe, Finset.mem_sigma, Finset.mem_Icc, Finset.mem_product,
-      Finset.mem_inter, mem_C, mem_D] at hx
-    obtain ⟨⟨h4, hX⟩, ⟨⟨⟨⟨hM1, hM2⟩, hp⟩, ⟨_, hq⟩⟩, ⟨⟨⟨hM1', hM2'⟩, hp'⟩, ⟨_, hq'⟩⟩⟩⟩ := hx
-    have hmem : ((N - M, N + M), (N - M', N + M')) ∈
-        (((oddPrimes X) ×ˢ (oddPrimes (2 * X))) ×ˢ
-          ((oddPrimes X) ×ˢ (oddPrimes (2 * X)))).filter
-          (fun x : (ℕ × ℕ) × (ℕ × ℕ) => x.1.1 + x.1.2 = x.2.1 + x.2.2) := by
-      simp only [Finset.mem_filter, Finset.mem_product, oddPrimes, Finset.mem_Icc]
-      exact ⟨⟨⟨⟨⟨by omega, by omega⟩, hp⟩, ⟨⟨by omega, by omega⟩, hq⟩⟩,
-        ⟨⟨⟨by omega, by omega⟩, hp'⟩, ⟨⟨by omega, by omega⟩, hq'⟩⟩⟩, by omega⟩
-    exact hmem
-  · rintro ⟨N, M, M'⟩ hx ⟨N2, K, K'⟩ hx2 heq
-    simp only [Finset.mem_coe, Finset.mem_sigma, Finset.mem_Icc, Finset.mem_product,
-      Finset.mem_inter, mem_C, mem_D] at hx hx2
-    obtain ⟨⟨h4, hX⟩, ⟨⟨⟨⟨hM1, hM2⟩, hp⟩, ⟨_, hq⟩⟩, ⟨⟨⟨hM1', hM2'⟩, hp'⟩, ⟨_, hq'⟩⟩⟩⟩ := hx
-    obtain ⟨⟨h42, hX2⟩, ⟨⟨⟨⟨hK1, hK2⟩, hr⟩, ⟨_, hs⟩⟩, ⟨⟨⟨hK1', hK2'⟩, hr'⟩, ⟨_, hs'⟩⟩⟩⟩ := hx2
-    simp only [Prod.mk.injEq] at heq
-    obtain ⟨⟨e1, e2⟩, e3, e4⟩ := heq
-    obtain rfl : N = N2 := by omega
-    obtain rfl : M = K := by omega
-    obtain rfl : M' = K' := by omega
-    rfl
-
-theorem positive_proportion_of_bounds {X : ℕ} {Tlow Vup : ℝ} (hTl : 0 ≤ Tlow)
-    (hVup : 0 < Vup) (hT : Tlow ≤ (Tsum X : ℝ)) (hV : (Vsum X : ℝ) ≤ Vup) :
-    Tlow ^ 2 / Vup ≤ (cnt X : ℝ) := by
-  have h1 : (Tsum X : ℝ) ^ 2 ≤ (cnt X : ℝ) * (Vsum X : ℝ) := by
-    exact_mod_cast cs_count X
-  have h2 : Tlow ^ 2 ≤ (Tsum X : ℝ) ^ 2 := by
-    nlinarith [mul_nonneg hTl (sub_nonneg.2 hT), sq_nonneg ((Tsum X : ℝ) - Tlow)]
-  have h3 : (cnt X : ℝ) * (Vsum X : ℝ) ≤ (cnt X : ℝ) * Vup :=
-    mul_le_mul_of_nonneg_left hV (Nat.cast_nonneg _)
-  rw [div_le_iff₀ hVup]
-  linarith
-
-theorem zero_case (N : ℕ) :
-    N.Prime ↔ ∃ p q : ℕ, p.Prime ∧ q.Prime ∧ p = q ∧ p + q = 2 * N := by
-  constructor
-  · intro h
-    exact ⟨N, N, h, h, rfl, by ring⟩
-  · rintro ⟨p, q, hp, _, hpq, hs⟩
-    have h : p = N := by omega
-    rw [← h]
-    exact hp
-
-theorem classical_iff_distinct (N : ℕ) :
-    (∃ p q : ℕ, p.Prime ∧ q.Prime ∧ p + q = 2 * N) ↔
-      N.Prime ∨ ∃ p q : ℕ, p.Prime ∧ q.Prime ∧ p ≠ q ∧ p + q = 2 * N := by
-  constructor
-  · rintro ⟨p, q, hp, hq, hs⟩
-    by_cases h : p = q
-    · left
-      have hN : p = N := by omega
-      rw [← hN]
-      exact hp
-    · right
-      exact ⟨p, q, hp, hq, h, hs⟩
-  · rintro (h | ⟨p, q, hp, hq, _, hs⟩)
-    · exact ⟨N, N, h, h, by ring⟩
-    · exact ⟨p, q, hp, hq, hs⟩
-
-theorem CD_iff_centered_witness {N M : ℕ} :
-    M ∈ C N ∩ D N ↔ (1 ≤ M ∧ M ≤ N - 3) ∧
-      ∃ P Q : ℕ, P.Prime ∧ Q.Prime ∧ 2 < P ∧ P < N ∧ N < Q ∧ Q < 2 * N ∧
-        P + 2 * M = Q ∧ P + Q = 2 * N := by
-  rw [Finset.mem_inter, mem_C, mem_D]
-  constructor
-  · rintro ⟨⟨hA, hp⟩, ⟨_, hq⟩⟩
-    exact ⟨hA, N - M, N + M, hp, hq, by omega, by omega, by omega, by omega, by omega,
-      by omega⟩
-  · rintro ⟨hA, P, Q, hP, hQ, h1, h2, h3, h4, h5, h6⟩
-    have e1 : N - M = P := by omega
-    have e2 : N + M = Q := by omega
-    rw [e1, e2]
-    exact ⟨⟨hA, hP⟩, ⟨hA, hQ⟩⟩
-
-theorem card_CD_le_primes (N : ℕ) :
-    (C N ∩ D N).card ≤ ((Finset.Icc 3 (N - 1)).filter Nat.Prime).card := by
-  rw [← card_C N]
-  exact Finset.card_le_card Finset.inter_subset_left
-
 end PigeonGoldbach.Core
-
-namespace PigeonGoldbach.CitedResults
-
-open PigeonGoldbach.Core
-
-/-- `π(n)`, the number of primes `p ≤ n`. -/
-noncomputable def piCount (n : ℕ) : ℕ := ((Finset.Icc 1 n).filter Nat.Prime).card
-
-/-- Cited: Rosser and Schoenfeld (1962), Corollary 1, (3.5): `π(x) > x/log x` for
-`x ≥ 17` (Proposition `prop:rs-pi`). -/
-def RosserSchoenfeldPi : Prop :=
-  ∀ x : ℝ, 17 ≤ x → x / Real.log x < (piCount ⌊x⌋₊ : ℝ)
-
-/-- Cited: the verification of the even Goldbach conjecture by Oliveira e Silva, Herzog and
-Pardi (Math. Comp. 83 (2014)) up to `4 · 10¹⁸`, with least prime at most `9781`. -/
-def GoldbachVerification : Prop :=
-  ∀ n : ℕ, 4 ≤ n → n ≤ 4 * 10 ^ 18 → n % 2 = 0 →
-    ∃ p : ℕ, p.Prime ∧ p ≤ 9781 ∧ (n - p).Prime
-
-theorem card_oddPrimes_add_one {X : ℕ} (hX : 2 ≤ X) :
-    (oddPrimes X).card + 1 = piCount X := by
-  have h : (Finset.Icc 1 X).filter Nat.Prime = insert 2 (oddPrimes X) := by
-    ext p
-    simp only [Finset.mem_filter, Finset.mem_Icc, Finset.mem_insert, oddPrimes]
-    constructor
-    · rintro ⟨⟨h1, h2⟩, hp⟩
-      by_cases h2' : p = 2
-      · exact Or.inl h2'
-      · right
-        have := hp.two_le
-        exact ⟨⟨by omega, h2⟩, hp⟩
-    · rintro (rfl | ⟨⟨h1, h2⟩, hp⟩)
-      · exact ⟨⟨by norm_num, hX⟩, Nat.prime_two⟩
-      · exact ⟨⟨by omega, h2⟩, hp⟩
-  have hn : 2 ∉ oddPrimes X := by simp [oddPrimes]
-  unfold piCount
-  rw [h, Finset.card_insert_of_notMem hn]
-
-theorem T_lower_of_RS (hRS : RosserSchoenfeldPi) {X : ℕ} (hX : 17 ≤ X)
-    (hs : 2 ≤ (X : ℝ) / Real.log X) :
-    ((X : ℝ) / Real.log X - 2) ^ 2 / 2 < (Tsum X : ℝ) := by
-  have h1 := hRS (X : ℝ) (by exact_mod_cast hX)
-  simp only [Nat.floor_natCast] at h1
-  have h2 := card_oddPrimes_add_one (X := X) (by omega)
-  have h3 : ((oddPrimes X).card : ℝ) + 1 = (piCount X : ℝ) := by exact_mod_cast h2
-  have h4 := T_ge_pairs X
-  have h5 := card_lt_pairs (oddPrimes X)
-  have h6 : (oddPrimes X).card ^ 2 ≤ 2 * Tsum X + (oddPrimes X).card := by linarith
-  have h7 : ((oddPrimes X).card : ℝ) ^ 2 ≤ 2 * (Tsum X : ℝ) + ((oddPrimes X).card : ℝ) := by
-    exact_mod_cast h6
-  have hmain : ∀ m s T : ℝ, s - 1 < m → 2 ≤ s → m ^ 2 ≤ 2 * T + m →
-      (s - 2) ^ 2 / 2 < T := by
-    intro m s T hm hs2 hT
-    nlinarith [mul_pos (by linarith : 0 < m - 1 - (s - 2)) (by linarith : 0 < m - 1 + (s - 2))]
-  exact hmain _ _ _ (by linarith) hs h7
-
-theorem positive_proportion_of_cited (hRS : RosserSchoenfeldPi) {X : ℕ} {Vup : ℝ}
-    (hX : 17 ≤ X) (hs : 2 ≤ (X : ℝ) / Real.log X) (hVup : 0 < Vup)
-    (hV : (Vsum X : ℝ) ≤ Vup) :
-    ((((X : ℝ) / Real.log X - 2) ^ 2 / 2) ^ 2) / Vup ≤ (cnt X : ℝ) :=
-  positive_proportion_of_bounds (by positivity) hVup (T_lower_of_RS hRS hX hs).le hV
-
-theorem verified_range (hG : GoldbachVerification)
-    (hsmall : ∀ N : ℕ, 4 ≤ N → N ≤ 9781 → (C N ∩ D N).Nonempty)
-    {N : ℕ} (h4 : 4 ≤ N) (hN : N ≤ 2 * 10 ^ 18) : (C N ∩ D N).Nonempty := by
-  by_cases hs : N ≤ 9781
-  · exact hsmall N h4 hs
-  · obtain ⟨p, hp, hp9781, hq⟩ := hG (2 * N) (by omega) (by omega) (by omega)
-    exact centered_of_partition h4 hp hq (by omega) (by omega)
-
-theorem distinct_goldbach_iff_tail (hG : GoldbachVerification)
-    (hsmall : ∀ N : ℕ, 4 ≤ N → N ≤ 9781 → (C N ∩ D N).Nonempty) :
-    (∀ N : ℕ, 4 ≤ N → ∃ p q : ℕ, p.Prime ∧ q.Prime ∧ p ≠ q ∧ p + q = 2 * N) ↔
-      ∀ N : ℕ, 2 * 10 ^ 18 < N → (C N ∩ D N).Nonempty := by
-  constructor
-  · intro h N hN
-    exact (centered_intersection_criterion (by omega)).1 (h N (by omega))
-  · intro h N hN
-    by_cases hb : N ≤ 2 * 10 ^ 18
-    · exact (centered_intersection_criterion hN).2 (verified_range hG hsmall hN hb)
-    · exact (centered_intersection_criterion hN).2 (h N (by omega))
-
-end PigeonGoldbach.CitedResults
 
 namespace PigeonGoldbach.Public
 
-open PigeonGoldbach.Core (A C D E B H R Tsum Vsum cnt oddPrimes IsSemiprime)
-open PigeonGoldbach.CitedResults (piCount RosserSchoenfeldPi GoldbachVerification)
+open PigeonGoldbach.Core (A C D E B H IsSemiprime)
 
 theorem geometric_equivalence {N : ℕ} (hN : 4 ≤ N) :
     ((∃ p q : ℕ, p.Prime ∧ q.Prime ∧ p ≠ q ∧ p + q = 2 * N) ↔
@@ -776,6 +502,7 @@ theorem gap_top_missing {N q M : ℕ}
     (hmax : ∀ Q : ℕ, Q.Prime → Q < 2 * N → Q ≤ q)
     (hA : M ∈ A N) (hbig : q < 2 * M + 3) : M ∈ A N \ E N :=
   PigeonGoldbach.Core.gap_top_missing hmax hA hbig
+
 
 theorem pigeonhole_CE (N : ℕ) (h : (A N \ E N).card < (C N).card) :
     (C N ∩ E N).Nonempty :=
@@ -840,72 +567,5 @@ theorem cramer_bound {p p' : ℕ} (hp3 : 3 ≤ p) (hpp : p < p')
     (hcons : ∀ r : ℕ, p < r → r < p' → ¬ r.Prime) (hH : 0 < H (p + 1)) :
     (p' : ℝ) - p < 2 * Real.log (2 * (p : ℝ) + 2) ^ 2 + 2 :=
   PigeonGoldbach.Core.cramer_bound hp3 hpp hcons hH
-
-theorem cs_count (X : ℕ) : Tsum X ^ 2 ≤ cnt X * Vsum X :=
-  PigeonGoldbach.Core.cs_count X
-
-theorem T_ge_pairs (X : ℕ) :
-    (((oddPrimes X) ×ˢ (oddPrimes X)).filter (fun x : ℕ × ℕ => x.1 < x.2)).card ≤ Tsum X :=
-  PigeonGoldbach.Core.T_ge_pairs X
-
-theorem card_lt_pairs (s : Finset ℕ) :
-    2 * ((s ×ˢ s).filter (fun x : ℕ × ℕ => x.1 < x.2)).card + s.card = s.card ^ 2 :=
-  PigeonGoldbach.Core.card_lt_pairs s
-
-theorem V_le_quad (X : ℕ) :
-    Vsum X ≤ (((((oddPrimes X) ×ˢ (oddPrimes (2 * X))) ×ˢ
-      ((oddPrimes X) ×ˢ (oddPrimes (2 * X)))).filter
-        (fun x : (ℕ × ℕ) × (ℕ × ℕ) => x.1.1 + x.1.2 = x.2.1 + x.2.2))).card :=
-  PigeonGoldbach.Core.V_le_quad X
-
-theorem positive_proportion_of_bounds {X : ℕ} {Tlow Vup : ℝ} (hTl : 0 ≤ Tlow)
-    (hVup : 0 < Vup) (hT : Tlow ≤ (Tsum X : ℝ)) (hV : (Vsum X : ℝ) ≤ Vup) :
-    Tlow ^ 2 / Vup ≤ (cnt X : ℝ) :=
-  PigeonGoldbach.Core.positive_proportion_of_bounds hTl hVup hT hV
-
-theorem card_oddPrimes_add_one {X : ℕ} (hX : 2 ≤ X) :
-    (oddPrimes X).card + 1 = piCount X :=
-  PigeonGoldbach.CitedResults.card_oddPrimes_add_one hX
-
-theorem T_lower_of_RS (hRS : RosserSchoenfeldPi) {X : ℕ} (hX : 17 ≤ X)
-    (hs : 2 ≤ (X : ℝ) / Real.log X) :
-    ((X : ℝ) / Real.log X - 2) ^ 2 / 2 < (Tsum X : ℝ) :=
-  PigeonGoldbach.CitedResults.T_lower_of_RS hRS hX hs
-
-theorem positive_proportion_of_cited (hRS : RosserSchoenfeldPi) {X : ℕ} {Vup : ℝ}
-    (hX : 17 ≤ X) (hs : 2 ≤ (X : ℝ) / Real.log X) (hVup : 0 < Vup)
-    (hV : (Vsum X : ℝ) ≤ Vup) :
-    ((((X : ℝ) / Real.log X - 2) ^ 2 / 2) ^ 2) / Vup ≤ (cnt X : ℝ) :=
-  PigeonGoldbach.CitedResults.positive_proportion_of_cited hRS hX hs hVup hV
-
-theorem verified_range (hG : GoldbachVerification)
-    (hsmall : ∀ N : ℕ, 4 ≤ N → N ≤ 9781 → (C N ∩ D N).Nonempty)
-    {N : ℕ} (h4 : 4 ≤ N) (hN : N ≤ 2 * 10 ^ 18) : (C N ∩ D N).Nonempty :=
-  PigeonGoldbach.CitedResults.verified_range hG hsmall h4 hN
-
-theorem zero_case (N : ℕ) :
-    N.Prime ↔ ∃ p q : ℕ, p.Prime ∧ q.Prime ∧ p = q ∧ p + q = 2 * N :=
-  PigeonGoldbach.Core.zero_case N
-
-theorem classical_iff_distinct (N : ℕ) :
-    (∃ p q : ℕ, p.Prime ∧ q.Prime ∧ p + q = 2 * N) ↔
-      N.Prime ∨ ∃ p q : ℕ, p.Prime ∧ q.Prime ∧ p ≠ q ∧ p + q = 2 * N :=
-  PigeonGoldbach.Core.classical_iff_distinct N
-
-theorem distinct_goldbach_iff_tail (hG : GoldbachVerification)
-    (hsmall : ∀ N : ℕ, 4 ≤ N → N ≤ 9781 → (C N ∩ D N).Nonempty) :
-    (∀ N : ℕ, 4 ≤ N → ∃ p q : ℕ, p.Prime ∧ q.Prime ∧ p ≠ q ∧ p + q = 2 * N) ↔
-      ∀ N : ℕ, 2 * 10 ^ 18 < N → (C N ∩ D N).Nonempty :=
-  PigeonGoldbach.CitedResults.distinct_goldbach_iff_tail hG hsmall
-
-theorem CD_iff_centered_witness {N M : ℕ} :
-    M ∈ C N ∩ D N ↔ (1 ≤ M ∧ M ≤ N - 3) ∧
-      ∃ P Q : ℕ, P.Prime ∧ Q.Prime ∧ 2 < P ∧ P < N ∧ N < Q ∧ Q < 2 * N ∧
-        P + 2 * M = Q ∧ P + Q = 2 * N :=
-  PigeonGoldbach.Core.CD_iff_centered_witness
-
-theorem card_CD_le_primes (N : ℕ) :
-    (C N ∩ D N).card ≤ ((Finset.Icc 3 (N - 1)).filter Nat.Prime).card :=
-  PigeonGoldbach.Core.card_CD_le_primes N
 
 end PigeonGoldbach.Public

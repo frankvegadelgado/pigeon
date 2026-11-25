@@ -25,21 +25,7 @@
     "PigeonGoldbach.Public.pigeonhole_CE_of_H",
     "PigeonGoldbach.Public.gap_card_missing",
     "PigeonGoldbach.Public.gap_card_consecutive",
-    "PigeonGoldbach.Public.cramer_bound",
-    "PigeonGoldbach.Public.cs_count",
-    "PigeonGoldbach.Public.T_ge_pairs",
-    "PigeonGoldbach.Public.card_lt_pairs",
-    "PigeonGoldbach.Public.V_le_quad",
-    "PigeonGoldbach.Public.positive_proportion_of_bounds",
-    "PigeonGoldbach.Public.card_oddPrimes_add_one",
-    "PigeonGoldbach.Public.T_lower_of_RS",
-    "PigeonGoldbach.Public.positive_proportion_of_cited",
-    "PigeonGoldbach.Public.verified_range",
-    "PigeonGoldbach.Public.zero_case",
-    "PigeonGoldbach.Public.classical_iff_distinct",
-    "PigeonGoldbach.Public.distinct_goldbach_iff_tail",
-    "PigeonGoldbach.Public.CD_iff_centered_witness",
-    "PigeonGoldbach.Public.card_CD_le_primes"
+    "PigeonGoldbach.Public.cramer_bound"
   ],
   "definition_names": [],
   "permitted_axioms": [

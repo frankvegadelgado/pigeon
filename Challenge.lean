@@ -54,7 +54,6 @@ theorem mem_E {N M : ℕ} :
 theorem mem_B {N M : ℕ} : M ∈ B N ↔ (1 ≤ M ∧ M ≤ N - 3) ∧ M % 2 ≠ N % 2 := by
   simp only [B, A, Finset.mem_filter, Finset.mem_Icc]
 
-/-- `N^2 - M^2 = (N - M)(N + M)` for `M ≤ N`. -/
 theorem area_eq {N M : ℕ} (h : M ≤ N) : N ^ 2 - M ^ 2 = (N - M) * (N + M) := by
   obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le h
   have h1 : M + k - M = k := by omega
@@ -79,7 +78,6 @@ theorem centered_of_lt {N p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hlt : p < q)
   rw [e1, e2]
   exact ⟨by omega, by omega, hp, hq⟩
 
-/-- Theorem `thm:geometric`: (i) `⇔` (ii) and (ii) `⇔` (iii). -/
 theorem geometric_equivalence {N : ℕ} (hN : 4 ≤ N) :
     ((∃ p q : ℕ, p.Prime ∧ q.Prime ∧ p ≠ q ∧ p + q = 2 * N) ↔
       ∃ M : ℕ, 1 ≤ M ∧ M ≤ N - 3 ∧ (N - M).Prime ∧ (N + M).Prime) ∧
@@ -134,7 +132,6 @@ theorem geometric_equivalence {N : ℕ} (hN : 4 ≤ N) :
           exact hp
         · omega
 
-/-- Proposition `prop:intersection`. -/
 theorem centered_intersection_criterion {N : ℕ} (hN : 4 ≤ N) :
     (∃ p q : ℕ, p.Prime ∧ q.Prime ∧ p ≠ q ∧ p + q = 2 * N) ↔ (C N ∩ D N).Nonempty := by
   rw [(geometric_equivalence hN).1]
@@ -148,7 +145,6 @@ theorem centered_intersection_criterion {N : ℕ} (hN : 4 ≤ N) :
     obtain ⟨⟨⟨h1, h2⟩, hP⟩, ⟨_, hQ⟩⟩ := hM
     exact ⟨M, h1, h2, hP, hQ⟩
 
-/-- Lemma `lem:CD-in-E`. -/
 theorem CD_subset_E (N : ℕ) : C N ∩ D N ⊆ E N := by
   intro M hM
   rw [Finset.mem_inter, mem_C, mem_D] at hM
@@ -157,7 +153,6 @@ theorem CD_subset_E (N : ℕ) : C N ∩ D N ⊆ E N := by
   rw [mem_E]
   refine ⟨⟨h1, h2⟩, N - M, N + M, hP, hQ, ?_, ?_, ?_, ?_, ?_⟩ <;> omega
 
-/-- Lemma `lem:CD-in-E`, second statement: `C_N ∩ E_N ∩ D_N = C_N ∩ D_N`. -/
 theorem CED_eq_CD (N : ℕ) : C N ∩ E N ∩ D N = C N ∩ D N := by
   ext M
   simp only [Finset.mem_inter]
@@ -167,7 +162,6 @@ theorem CED_eq_CD (N : ℕ) : C N ∩ E N ∩ D N = C N ∩ D N := by
   · rintro ⟨a, c⟩
     exact ⟨⟨a, CD_subset_E N (Finset.mem_inter.2 ⟨a, c⟩)⟩, c⟩
 
-/-- Both centered sets lie in the parity class `B_N` (Section `subsec:setintersection`). -/
 theorem C_D_subset_B (N : ℕ) : C N ⊆ B N ∧ D N ⊆ B N := by
   constructor
   · intro M hM
@@ -183,8 +177,6 @@ theorem C_D_subset_B (N : ℕ) : C N ⊆ B N ∧ D N ⊆ B N := by
     rw [mem_B]
     exact ⟨⟨h1, h2⟩, by omega⟩
 
-/-- Lemma `lem:gap`: if `p⁻` is the largest prime below `N` and `p⁺` the smallest above `N`,
-every `M ∈ E_N` satisfies `p⁺ - p⁻ ≤ 2M`. -/
 theorem gap_lower {N pm pp M : ℕ}
     (hbelow : ∀ P : ℕ, P.Prime → P < N → P ≤ pm)
     (habove : ∀ Q : ℕ, Q.Prime → N < Q → pp ≤ Q)
@@ -195,7 +187,6 @@ theorem gap_lower {N pm pp M : ℕ}
   have h2 := habove Q hQ hNQ
   omega
 
-/-- Lemma `lem:gap`, second statement: every `M ∈ A_N` with `2M < p⁺ - p⁻` is missing from `E_N`. -/
 theorem gap_lower_missing {N pm pp M : ℕ}
     (hbelow : ∀ P : ℕ, P.Prime → P < N → P ≤ pm)
     (habove : ∀ Q : ℕ, Q.Prime → N < Q → pp ≤ Q)
@@ -205,8 +196,6 @@ theorem gap_lower_missing {N pm pp M : ℕ}
   have := gap_lower hbelow habove hE
   omega
 
-/-- Lemma `lem:gap-top`: if `q` is the largest prime below `2N`, every `M ∈ E_N`
-satisfies `2M + 3 ≤ q`. -/
 theorem gap_top {N q M : ℕ}
     (hmax : ∀ Q : ℕ, Q.Prime → Q < 2 * N → Q ≤ q)
     (hM : M ∈ E N) : 2 * M + 3 ≤ q := by
@@ -215,7 +204,6 @@ theorem gap_top {N q M : ℕ}
   have h1 := hmax Q hQ hQN
   omega
 
-/-- Lemma `lem:gap-top`, second statement: every `M ∈ A_N` with `q < 2M + 3` is missing from `E_N`. -/
 theorem gap_top_missing {N q M : ℕ}
     (hmax : ∀ Q : ℕ, Q.Prime → Q < 2 * N → Q ≤ q)
     (hA : M ∈ A N) (hbig : q < 2 * M + 3) : M ∈ A N \ E N := by
@@ -224,7 +212,6 @@ theorem gap_top_missing {N q M : ℕ}
   have := gap_top hmax hE
   omega
 
-/-- The pigeonhole step of Proposition `prop:pigeonhole-CE`. -/
 theorem pigeonhole_core {α : Type*} [DecidableEq α] {S T U : Finset α}
     (hT : T ⊆ S) (h : (S \ U).card < T.card) : (T ∩ U).Nonempty := by
   by_contra hne
@@ -241,12 +228,9 @@ theorem pigeonhole_core {α : Type*} [DecidableEq α] {S T U : Finset α}
 
 theorem C_subset_A (N : ℕ) : C N ⊆ A N := fun _ hM => mem_A.2 (mem_C.1 hM).1
 
-/-- Proposition `prop:pigeonhole-CE`, combinatorial form: if `|A_N \ E_N| < |C_N|`
-then `C_N ∩ E_N` is nonempty. -/
 theorem pigeonhole_CE (N : ℕ) (h : (A N \ E N).card < (C N).card) : (C N ∩ E N).Nonempty :=
   pigeonhole_core (C_subset_A N) h
 
-/-- The map `M ↦ N - M` is a bijection from `C_N` onto the primes `P` with `3 ≤ P ≤ N - 1`. -/
 theorem card_C (N : ℕ) :
     (C N).card = ((Finset.Icc 3 (N - 1)).filter Nat.Prime).card := by
   refine Finset.card_nbij' (fun M => N - M) (fun P => N - P) ?_ ?_ ?_ ?_
@@ -277,8 +261,6 @@ theorem card_C (N : ℕ) :
     show N - (N - P) = P
     omega
 
-/-- Corollary `cor:half-difference-baseline`, combinatorial form: every prime `Q` with
-`N < Q ≤ 2N - 3` gives the distinct element `(Q - 3) / 2` of `E_N`. -/
 theorem card_E_ge {N : ℕ} (hN : 4 ≤ N) :
     ((Finset.Ioc N (2 * N - 3)).filter Nat.Prime).card ≤ (E N).card := by
   refine Finset.card_le_card_of_injOn (fun Q => (Q - 3) / 2) ?_ ?_
@@ -302,8 +284,6 @@ theorem card_E_ge {N : ℕ} (hN : 4 ≤ N) :
     have o2 := odd_of_prime_gt bp (by omega)
     omega
 
-/-- Corollary `cor:goldbach-diff`, second statement: for a prime `3 ≤ P < N`, the value
-`N - P` lies in `E_N` iff `Q' = (2N - P) + (P' - P)` for primes `2 < P' < N < Q' < 2N`. -/
 theorem mem_E_shift {N P : ℕ} (hP3 : 3 ≤ P) (hPN : P < N) :
     (N - P) ∈ E N ↔ ∃ P' Q' : ℕ, P'.Prime ∧ Q'.Prime ∧ 2 < P' ∧ P' < N ∧ N < Q' ∧
       Q' < 2 * N ∧ Q' + 2 * P = 2 * N + P' := by
@@ -314,8 +294,6 @@ theorem mem_E_shift {N P : ℕ} (hP3 : 3 ≤ P) (hPN : P < N) :
   · rintro ⟨P', Q', h1, h2, h3, h4, h5, h6, h7⟩
     exact ⟨⟨by omega, by omega⟩, P', Q', h1, h2, h3, h4, h5, h6, by omega⟩
 
-/-- The step of Proposition `prop:verified`: a partition `2N = p + q` with `p < N` gives
-an element of `C_N ∩ D_N`. -/
 theorem centered_of_partition {N p q : ℕ} (hN : 4 ≤ N) (hp : p.Prime) (hq : q.Prime)
     (hs : p + q = 2 * N) (hlt : p < N) : (C N ∩ D N).Nonempty := by
   have hpq : p < q := by omega
@@ -324,7 +302,6 @@ theorem centered_of_partition {N p q : ℕ} (hN : 4 ≤ N) (hp : p.Prime) (hq : 
   rw [Finset.mem_inter, mem_C, mem_D]
   exact ⟨⟨⟨a, b⟩, c⟩, ⟨⟨a, b⟩, d⟩⟩
 
-/-- The small cases of Section `subsec:small`: `C_N ∩ D_N ≠ ∅` for `4 ≤ N ≤ 12`. -/
 theorem small_cases {N : ℕ} (h1 : 4 ≤ N) (h2 : N ≤ 12) : (C N ∩ D N).Nonempty := by
   have key : ∀ M : ℕ, 1 ≤ M → M ≤ N - 3 → (N - M).Prime → (N + M).Prime →
       (C N ∩ D N).Nonempty := by
@@ -347,7 +324,6 @@ theorem small_cases {N : ℕ} (h1 : 4 ≤ N) (h2 : N ≤ 12) : (C N ∩ D N).Non
 noncomputable def H (N : ℕ) : ℝ :=
   Real.log (2 * (N : ℝ)) ^ 2 - (((N : ℝ) - 3) - (E N).card)
 
-/-- `H(N) > 0` holds exactly when fewer than `log²(2N)` values of `A_N` are missing from `E_N`. -/
 theorem H_pos_iff {N : ℕ} (hN : 3 ≤ N) :
     0 < H N ↔ ((A N \ E N).card : ℝ) < Real.log (2 * (N : ℝ)) ^ 2 := by
   have hsub : E N ⊆ A N := Finset.filter_subset _ _
@@ -366,7 +342,6 @@ theorem H_pos_iff {N : ℕ} (hN : 3 ≤ N) :
   unfold H
   constructor <;> intro h <;> linarith
 
-/-- Corollary `cor:goldbach-diff`, counting form: `|C_N| ≤ |C_N ∩ E_N| + |A_N \ E_N|`. -/
 theorem card_C_le_CE_add (N : ℕ) :
     (C N).card ≤ (C N ∩ E N).card + (A N \ E N).card := by
   have hsub : C N ⊆ (C N ∩ E N) ∪ (A N \ E N) := by
@@ -376,12 +351,9 @@ theorem card_C_le_CE_add (N : ℕ) :
     · exact Finset.mem_union_right _ (Finset.mem_sdiff.2 ⟨C_subset_A N hM, hE⟩)
   exact (Finset.card_le_card hsub).trans (Finset.card_union_le _ _)
 
-/-- Corollary `cor:goldbach-diff`: `|C_N ∩ E_N| ≤ |C_N|`. -/
 theorem card_CE_le (N : ℕ) : (C N ∩ E N).card ≤ (C N).card :=
   Finset.card_le_card Finset.inter_subset_left
 
-/-- Section `subsec:upper-prime-count`: every pair of primes `3 ≤ P < N < Q ≤ 2N - 3`
-gives the half-difference `(Q - P) / 2 ∈ E_N`. -/
 theorem mem_E_of_pair {N P Q : ℕ} (hP : P.Prime) (hQ : Q.Prime) (hP3 : 3 ≤ P)
     (hPN : P < N) (hNQ : N < Q) (hQ3 : Q + 3 ≤ 2 * N) : (Q - P) / 2 ∈ E N := by
   have h1 := odd_of_prime_gt hP (by omega)
@@ -389,8 +361,6 @@ theorem mem_E_of_pair {N P Q : ℕ} (hP : P.Prime) (hQ : Q.Prime) (hP3 : 3 ≤ P
   rw [mem_E]
   exact ⟨⟨by omega, by omega⟩, P, Q, hP, hQ, by omega, hPN, hNQ, by omega, by omega⟩
 
-/-- Corollary `cor:half-difference-baseline`: the primes in `(N, 2N)` number at most
-`|E_N| + 1`. -/
 theorem card_E_ge_Ioo {N : ℕ} (hN : 4 ≤ N) :
     ((Finset.Ioo N (2 * N)).filter Nat.Prime).card ≤ (E N).card + 1 := by
   have hsub : (Finset.Ioo N (2 * N)).filter Nat.Prime ⊆
@@ -411,16 +381,11 @@ theorem card_E_ge_Ioo {N : ℕ} (hN : 4 ≤ N) :
     _ ≤ ((Finset.Ioc N (2 * N - 3)).filter Nat.Prime).card + 1 := Finset.card_insert_le _ _
     _ ≤ (E N).card + 1 := Nat.add_le_add_right (card_E_ge hN) 1
 
-/-- Proposition `prop:pigeonhole-CE` with the statistic `H`: if `H(N) > 0` and
-`|C_N| > log²(2N)` then `C_N ∩ E_N` is nonempty. -/
 theorem pigeonhole_CE_of_H {N : ℕ} (hN : 3 ≤ N) (hH : 0 < H N)
     (hC : Real.log (2 * (N : ℝ)) ^ 2 < (C N).card) : (C N ∩ E N).Nonempty := by
   have h := (H_pos_iff hN).1 hH
   exact pigeonhole_CE N (Nat.cast_lt.1 (lt_trans h hC))
 
-/-- Lemma `lem:gap` and Theorem `thm:cramer`, counting form: if `p⁻` is the largest prime
-below `N` and `p⁺` the smallest above `N`, with `p⁺ - p⁻ + 4 ≤ 2N`, then at least
-`(p⁺ - p⁻)/2 - 1` values of `A_N` are missing from `E_N`. -/
 theorem gap_card_missing {N pm pp : ℕ}
     (hbelow : ∀ P : ℕ, P.Prime → P < N → P ≤ pm)
     (habove : ∀ Q : ℕ, Q.Prime → N < Q → pp ≤ Q)
@@ -434,8 +399,6 @@ theorem gap_card_missing {N pm pp : ℕ}
   rw [Nat.card_Icc] at this
   omega
 
-/-- Theorem `thm:cramer`, finite form: for consecutive primes `p < p'` with `3 ≤ p`
-(no prime strictly between them), `p' - p ≤ 2 |A_{p+1} \ E_{p+1}| + 2`. -/
 theorem gap_card_consecutive {p p' : ℕ} (hp3 : 3 ≤ p) (hpp : p < p')
     (hcons : ∀ r : ℕ, p < r → r < p' → ¬ r.Prime) :
     p' - p ≤ 2 * (A (p + 1) \ E (p + 1)).card + 2 := by
@@ -450,8 +413,6 @@ theorem gap_card_consecutive {p p' : ℕ} (hp3 : 3 ≤ p) (hpp : p < p')
     by_contra h
     exact hcons Q (by omega) (by omega) hQ
 
-/-- Theorem `thm:cramer`: if `H(p + 1) > 0` for consecutive primes `p < p'` with `3 ≤ p`,
-then `p' - p < 2 log²(2p + 2) + 2`. -/
 theorem cramer_bound {p p' : ℕ} (hp3 : 3 ≤ p) (hpp : p < p')
     (hcons : ∀ r : ℕ, p < r → r < p' → ¬ r.Prime) (hH : 0 < H (p + 1)) :
     (p' : ℝ) - p < 2 * Real.log (2 * (p : ℝ) + 2) ^ 2 + 2 := by
@@ -481,7 +442,6 @@ noncomputable def Vsum (X : ℕ) : ℕ := ∑ N ∈ Finset.Icc 4 X, R N ^ 2
 /-- The number of `N` with `4 ≤ N ≤ X` and `R(2N) ≥ 1`. -/
 noncomputable def cnt (X : ℕ) : ℕ := ((Finset.Icc 4 X).filter fun N => 1 ≤ R N).card
 
-/-- Theorem `thm:positive-proportion`, Cauchy–Schwarz step: `T² ≤ cnt · V`. -/
 theorem cs_count (X : ℕ) : Tsum X ^ 2 ≤ cnt X * Vsum X := by
   unfold Tsum Vsum cnt
   have hT : ∑ N ∈ Finset.Icc 4 X, R N =
@@ -507,9 +467,6 @@ theorem cs_count (X : ℕ) : Tsum X ^ 2 ≤ cnt X * Vsum X := by
     exact key
   exact_mod_cast key2
 
-/-- Theorem `thm:positive-proportion`, lower bound for `T`: every pair of odd primes
-`p < q ≤ X` gives a distinct pair `(N, M)` with `N = (p + q)/2` and
-`M = (q - p)/2 ∈ C_N ∩ D_N`. -/
 theorem T_ge_pairs (X : ℕ) :
     (((oddPrimes X) ×ˢ (oddPrimes X)).filter (fun x : ℕ × ℕ => x.1 < x.2)).card ≤ Tsum X := by
   have hcard : ((Finset.Icc 4 X).sigma fun N => C N ∩ D N).card = Tsum X := by
@@ -547,7 +504,6 @@ theorem T_ge_pairs (X : ℕ) :
     rw [Prod.mk.injEq]
     constructor <;> omega
 
-/-- The number of pairs `(a, b) ∈ s × s` with `a < b` is `(|s|² - |s|)/2`. -/
 theorem card_lt_pairs (s : Finset ℕ) :
     2 * ((s ×ˢ s).filter (fun x : ℕ × ℕ => x.1 < x.2)).card + s.card = s.card ^ 2 := by
   have hFU : (s ×ˢ s).filter (fun x : ℕ × ℕ => x.1 < x.2) ⊆ s ×ˢ s :=
@@ -595,10 +551,6 @@ theorem card_lt_pairs (s : Finset ℕ) :
   rw [hswap] at h1
   linarith
 
-/-- Theorem `thm:positive-proportion`, upper bound for `V`: each `R(2N)²` counts pairs of
-representations `2N = p + q = p' + q'`, so `V` is at most the number of quadruples
-`(p, q, p', q')` with `p, p'` odd primes `≤ X`, `q, q'` odd primes `≤ 2X` and
-`p + q = p' + q'`. -/
 theorem V_le_quad (X : ℕ) :
     Vsum X ≤ (((((oddPrimes X) ×ˢ (oddPrimes (2 * X))) ×ˢ
       ((oddPrimes X) ×ˢ (oddPrimes (2 * X)))).filter
@@ -635,10 +587,6 @@ theorem V_le_quad (X : ℕ) :
     obtain rfl : M' = K' := by omega
     rfl
 
-/-- Theorem `thm:positive-proportion`, conditional form: if `Tlow ≤ T` and `V ≤ Vup` with
-`Tlow ≥ 0` and `Vup > 0`, then at least `Tlow² / Vup` integers `4 ≤ N ≤ X` have
-`R(2N) ≥ 1`. The explicit bounds on `T` and `V` of the paper are analytic inputs
-and are taken as hypotheses. -/
 theorem positive_proportion_of_bounds {X : ℕ} {Tlow Vup : ℝ} (hTl : 0 ≤ Tlow)
     (hVup : 0 < Vup) (hT : Tlow ≤ (Tsum X : ℝ)) (hV : (Vsum X : ℝ) ≤ Vup) :
     Tlow ^ 2 / Vup ≤ (cnt X : ℝ) := by
@@ -651,7 +599,6 @@ theorem positive_proportion_of_bounds {X : ℕ} {Tlow Vup : ℝ} (hTl : 0 ≤ Tl
   rw [div_le_iff₀ hVup]
   linarith
 
-/-- Open question 5 (`M = 0`): `2N = p + p` with `p` prime exactly when `N` is prime. -/
 theorem zero_case (N : ℕ) :
     N.Prime ↔ ∃ p q : ℕ, p.Prime ∧ q.Prime ∧ p = q ∧ p + q = 2 * N := by
   constructor
@@ -662,8 +609,6 @@ theorem zero_case (N : ℕ) :
     rw [← h]
     exact hp
 
-/-- Open question 5: `2N` is a sum of two primes exactly when `N` is prime or `2N` is a sum
-of two distinct primes. -/
 theorem classical_iff_distinct (N : ℕ) :
     (∃ p q : ℕ, p.Prime ∧ q.Prime ∧ p + q = 2 * N) ↔
       N.Prime ∨ ∃ p q : ℕ, p.Prime ∧ q.Prime ∧ p ≠ q ∧ p + q = 2 * N := by
@@ -680,8 +625,6 @@ theorem classical_iff_distinct (N : ℕ) :
     · exact ⟨N, N, h, h, by ring⟩
     · exact ⟨p, q, hp, hq, hs⟩
 
-/-- Section `subsec:proof-gap`: `M ∈ C_N ∩ D_N` exactly when `M` is the half-difference of a
-straddling pair `(P, Q)` that is centered, that is, with `P + Q = 2N`. -/
 theorem CD_iff_centered_witness {N M : ℕ} :
     M ∈ C N ∩ D N ↔ (1 ≤ M ∧ M ≤ N - 3) ∧
       ∃ P Q : ℕ, P.Prime ∧ Q.Prime ∧ 2 < P ∧ P < N ∧ N < Q ∧ Q < 2 * N ∧
@@ -697,8 +640,6 @@ theorem CD_iff_centered_witness {N M : ℕ} :
     rw [e1, e2]
     exact ⟨⟨hA, hP⟩, ⟨hA, hQ⟩⟩
 
-/-- Proposition `prop:HR-negative`, counting step: `R(2N) ≤ |C_N|`, the number of primes
-`P` with `3 ≤ P ≤ N - 1`. -/
 theorem card_CD_le_primes (N : ℕ) :
     (C N ∩ D N).card ≤ ((Finset.Icc 3 (N - 1)).filter Nat.Prime).card := by
   rw [← card_C N]
@@ -713,51 +654,10 @@ open PigeonGoldbach.Core
 /-- `π(n)`, the number of primes `p ≤ n`. -/
 noncomputable def piCount (n : ℕ) : ℕ := ((Finset.Icc 1 n).filter Nat.Prime).card
 
-/-- The Hardy–Littlewood constant `ω = ∏_{p > 2} (1 - 1/(p - 1)²)`. -/
-noncomputable def omegaConst : ℝ :=
-  ∏' p : {p : ℕ // p.Prime ∧ 2 < p}, (1 - 1 / ((p : ℝ) - 1) ^ 2)
-
-/-- The arithmetic factor `κ(h) = ∏_{p ∣ h, p > 2} (p - 1)/(p - 2)`. -/
-noncomputable def kappa (h : ℕ) : ℝ :=
-  ∏ p ∈ h.primeFactors.filter (fun p => 2 < p), ((p : ℝ) - 1) / ((p : ℝ) - 2)
-
-/-- Cited: the sieve bound of Siebert (Proposition `prop:siebert`). For every real `x > 1`
-and every even `h ≠ 0`, the number of primes `p ≤ x` with `p + h` prime is at most
-`16 ω κ(h) x / log² x`. -/
-def SiebertBound : Prop :=
-  ∀ (x : ℝ) (h : ℕ), 1 < x → h ≠ 0 → h % 2 = 0 →
-    (((Finset.Icc 1 ⌊x⌋₊).filter fun p => p.Prime ∧ (p + h).Prime).card : ℝ) ≤
-      16 * omegaConst * kappa h * (x / Real.log x ^ 2)
-
-/-- Cited: Dusart (1998), Théorème 1.10, upper bound
-`π(x) ≤ x/log x · (1 + 1.2762/log x)` for `x > 1` (Proposition `prop:dusart-upper`). -/
-def DusartUpper : Prop :=
-  ∀ x : ℝ, 1 < x →
-    (piCount ⌊x⌋₊ : ℝ) ≤ x / Real.log x * (1 + 1.2762 / Real.log x)
-
-/-- Cited: Dusart (1998), Théorème 1.10, lower bound
-`x/log x · (1 + 1/log x) ≤ π(x)` for `x ≥ 599` (Proposition `prop:dusart-upper`). -/
-def DusartLower : Prop :=
-  ∀ x : ℝ, 599 ≤ x →
-    x / Real.log x * (1 + 1 / Real.log x) ≤ (piCount ⌊x⌋₊ : ℝ)
-
 /-- Cited: Rosser and Schoenfeld (1962), Corollary 1, (3.5): `π(x) > x/log x` for
 `x ≥ 17` (Proposition `prop:rs-pi`). -/
 def RosserSchoenfeldPi : Prop :=
   ∀ x : ℝ, 17 ≤ x → x / Real.log x < (piCount ⌊x⌋₊ : ℝ)
-
-/-- Cited: Rosser and Schoenfeld (1962), Corollaries 3.8–3.9:
-`3x/(5 log x) < π(2x) - π(x) < 7x/(5 log x)` for `x ≥ 41/2` (Proposition `prop:rs-dyadic`). -/
-def RosserSchoenfeldDyadic : Prop :=
-  ∀ x : ℝ, 41 / 2 ≤ x →
-    3 * x / (5 * Real.log x) < (piCount ⌊2 * x⌋₊ : ℝ) - (piCount ⌊x⌋₊ : ℝ) ∧
-      (piCount ⌊2 * x⌋₊ : ℝ) - (piCount ⌊x⌋₊ : ℝ) < 7 * x / (5 * Real.log x)
-
-/-- Cited: Dusart (1998), Théorème 1.9: for `x ≥ 3275` there is a prime `p` with
-`x < p ≤ x (1 + 1/(2 log² x))` (Proposition `prop:dusart-short`). -/
-def DusartShortInterval : Prop :=
-  ∀ x : ℝ, 3275 ≤ x →
-    ∃ p : ℕ, p.Prime ∧ x < p ∧ (p : ℝ) ≤ x * (1 + 1 / (2 * Real.log x ^ 2))
 
 /-- Cited: the verification of the even Goldbach conjecture by Oliveira e Silva, Herzog and
 Pardi (Math. Comp. 83 (2014)) up to `4 · 10¹⁸`, with least prime at most `9781`. -/
@@ -765,7 +665,6 @@ def GoldbachVerification : Prop :=
   ∀ n : ℕ, 4 ≤ n → n ≤ 4 * 10 ^ 18 → n % 2 = 0 →
     ∃ p : ℕ, p.Prime ∧ p ≤ 9781 ∧ (n - p).Prime
 
-/-- The odd primes `≤ X` number `π(X) - 1`. -/
 theorem card_oddPrimes_add_one {X : ℕ} (hX : 2 ≤ X) :
     (oddPrimes X).card + 1 = piCount X := by
   have h : (Finset.Icc 1 X).filter Nat.Prime = insert 2 (oddPrimes X) := by
@@ -785,8 +684,6 @@ theorem card_oddPrimes_add_one {X : ℕ} (hX : 2 ≤ X) :
   unfold piCount
   rw [h, Finset.card_insert_of_notMem hn]
 
-/-- Theorem `thm:positive-proportion`, lower bound for `T` from the cited bound
-`π(x) > x/log x`: `T > (s - 2)²/2` with `s = X/log X`. -/
 theorem T_lower_of_RS (hRS : RosserSchoenfeldPi) {X : ℕ} (hX : 17 ≤ X)
     (hs : 2 ≤ (X : ℝ) / Real.log X) :
     ((X : ℝ) / Real.log X - 2) ^ 2 / 2 < (Tsum X : ℝ) := by
@@ -805,18 +702,12 @@ theorem T_lower_of_RS (hRS : RosserSchoenfeldPi) {X : ℕ} (hX : 17 ≤ X)
     nlinarith [mul_pos (by linarith : 0 < m - 1 - (s - 2)) (by linarith : 0 < m - 1 + (s - 2))]
   exact hmain _ _ _ (by linarith) hs h7
 
-/-- Theorem `thm:positive-proportion`: with the cited bound `π(x) > x/log x` and an upper
-bound `V ≤ Vup` (which the paper derives from Siebert's inequality), at least
-`((s - 2)²/2)² / Vup` integers `4 ≤ N ≤ X` have `R(2N) ≥ 1`. -/
 theorem positive_proportion_of_cited (hRS : RosserSchoenfeldPi) {X : ℕ} {Vup : ℝ}
     (hX : 17 ≤ X) (hs : 2 ≤ (X : ℝ) / Real.log X) (hVup : 0 < Vup)
     (hV : (Vsum X : ℝ) ≤ Vup) :
     ((((X : ℝ) / Real.log X - 2) ^ 2 / 2) ^ 2) / Vup ≤ (cnt X : ℝ) :=
   positive_proportion_of_bounds (by positivity) hVup (T_lower_of_RS hRS hX hs).le hV
 
-/-- Proposition `prop:verified`: from the cited verification of the even Goldbach conjecture
-(with least prime at most `9781`) and the computed range `4 ≤ N ≤ 9781`, `R(2N) ≥ 1` for
-every `4 ≤ N ≤ 2 · 10¹⁸`. -/
 theorem verified_range (hG : GoldbachVerification)
     (hsmall : ∀ N : ℕ, 4 ≤ N → N ≤ 9781 → (C N ∩ D N).Nonempty)
     {N : ℕ} (h4 : 4 ≤ N) (hN : N ≤ 2 * 10 ^ 18) : (C N ∩ D N).Nonempty := by
@@ -825,9 +716,6 @@ theorem verified_range (hG : GoldbachVerification)
   · obtain ⟨p, hp, hp9781, hq⟩ := hG (2 * N) (by omega) (by omega) (by omega)
     exact centered_of_partition h4 hp hq (by omega) (by omega)
 
-/-- The distinct-prime Goldbach conjecture is equivalent to `C_N ∩ D_N ≠ ∅` for every
-`N > 2 · 10¹⁸`, given the cited verification of the even Goldbach conjecture and the computed
-range `4 ≤ N ≤ 9781`. -/
 theorem distinct_goldbach_iff_tail (hG : GoldbachVerification)
     (hsmall : ∀ N : ℕ, 4 ≤ N → N ≤ 9781 → (C N ∩ D N).Nonempty) :
     (∀ N : ℕ, 4 ≤ N → ∃ p q : ℕ, p.Prime ∧ q.Prime ∧ p ≠ q ∧ p + q = 2 * N) ↔

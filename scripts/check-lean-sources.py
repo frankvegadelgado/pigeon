@@ -3,6 +3,7 @@
 
 Scanner functions follow PalomarSubmission/scripts/source_requirements.py.
 """
+import json
 import os
 import re
 from pathlib import Path
@@ -82,6 +83,32 @@ def lean_source_files(root: Path) -> list[Path]:
     return files
 
 
+CHALLENGE_LINE_CAP = 1_000
+CHALLENGE_LINE_WARN = 950
+
+
+def check_challenge_cap(root: Path) -> bool:
+    """The configured Challenge source has a hard cap of 1,000 lines at Palomar."""
+    config = root / "comparator.json"
+    if not config.is_file():
+        return False
+    module = json.loads(config.read_text(encoding="utf-8")).get("challenge_module")
+    if not module:
+        return False
+    path = root / (module.replace(".", "/") + ".lean")
+    if not path.is_file():
+        print(f"{path.name}: configured challenge source not found")
+        return True
+    lines = physical_lines(path.read_bytes().decode("utf-8"))
+    if lines > CHALLENGE_LINE_CAP:
+        print(f"{path.name}: {lines} lines exceed the {CHALLENGE_LINE_CAP}-line cap of the "
+              "configured challenge source; keep only what the compared statements need")
+        return True
+    if lines > CHALLENGE_LINE_WARN:
+        print(f"{path.name}: {lines} lines, close to the {CHALLENGE_LINE_CAP}-line cap")
+    return False
+
+
 def main() -> int:
     root = Path(__file__).resolve().parents[1]
     failed = False
@@ -103,6 +130,7 @@ def main() -> int:
         if physical_lines(text) > 10_000:
             print(f"{relative}: exceeds 10,000 lines; split into smaller modules")
             failed = True
+    failed |= check_challenge_cap(root)
     return int(failed)
 
 

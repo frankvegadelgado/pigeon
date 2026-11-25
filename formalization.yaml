@@ -1,0 +1,80 @@
+version: v0.4
+project:
+  name: "PigeonGoldbach: nested squares and distinct-prime Goldbach partitions"
+  description: "Lean 4 formalization of the elementary statements of the paper 'Nested Squares and Distinct-Prime Goldbach Partitions'. The compared results are: the geometric equivalence of a distinct-prime Goldbach partition of 2N, a centered pair N - M, N + M of primes with M in [1, N - 3], and a semiprime L-shaped area N^2 - M^2 (Theorem thm:geometric); the centered intersection criterion C_N ∩ D_N nonempty (Proposition prop:intersection); the inclusion C_N ∩ D_N ⊆ E_N into the half-difference set (Lemma lem:CD-in-E); the parity class of C_N and D_N; the gap obstructions of Lemmas lem:gap and lem:gap-top; the pigeonhole step of Proposition prop:pigeonhole-CE; the count |C_N| of primes 3 <= P <= N - 1; the baseline supply of half-differences of Corollary cor:half-difference-baseline; the shift form of Corollary cor:goldbach-diff; the step of Proposition prop:verified from a partition with p < N to an element of C_N ∩ D_N; the criterion H(N) > 0 for the coverage statistic and the Cramer-type bound p' - p < 2 log^2(2p + 2) + 2 for consecutive primes when H(p + 1) > 0 (Theorem thm:cramer), together with the counting form of Corollary cor:long-gaps; the counting steps of Corollary cor:goldbach-diff; and the small cases N = 4, ..., 12. For Theorem thm:positive-proportion (more than X/2382 integers N <= X with 2N a sum of two distinct primes, for every X >= 10^6) it formalizes the combinatorial part of the method: the Cauchy-Schwarz bound T^2 <= (number of N with R(2N) >= 1) * V, the lower bound of T by the number of pairs of odd primes p < q <= X, the count of such pairs, the bound of V by the number of quadruples (p, q, p', q') of odd primes with p, p' <= X, q, q' <= 2X and p + q = p' + q', the lower bound T > (s - 2)^2/2 with s = X/log X from the cited Rosser-Schoenfeld bound, and the conditional form of the theorem with explicit bounds on T and V as hypotheses. The cited results are stated as explicit hypotheses in a separate module, as in the Paloma formalization: Siebert's sieve bound, the bounds of Dusart and of Rosser and Schoenfeld, and the verification of the even Goldbach conjecture up to 4e18, from which Proposition prop:verified is proved. The analytic results (Mikawa's theorem, Siebert's sieve bound, the proofs of the explicit prime-counting estimates, the energy bound, the numerical constants of Theorem thm:positive-proportion and the computations) are not formalized."
+  authors:
+    - name: "Frank Vega"
+      orcid: "0000-0001-8210-4126"
+      email: "vega.frank@gmail.com"
+      affiliation: "Information Physics Institute"
+  license: "Apache-2.0"
+  responsible_maintainers:
+    - name: "Frank Vega"
+      github: "frankvegadelgado"
+      email: "vega.frank@gmail.com"
+
+classification:
+  arxiv: ["math.NT"]
+  msc: ["11P32", "51M15", "11A25"]
+
+paper: paper.tex
+lean_toolchain_file: lean-toolchain
+
+sources:
+  - title: "Nested Squares and Distinct-Prime Goldbach Partitions"
+    type: manuscript
+    relationship: formalizes
+    authors: ["Frank Vega"]
+
+automation:
+  methods:
+    - method: manual
+      notes: "The author states the theorems, writes and edits the paper (with the AI assistance described below), and reviews the formal statements in Challenge.lean."
+    - method: other
+      notes: "Claude (Anthropic) assisted in deriving the proofs, in writing the Lean 4 formalization and in preparing the manuscript; the author reviewed and edited the AI-assisted content. The Lean proofs are checked by the Lean kernel via lake build, and lake comparator verifies Solution.lean against Challenge.lean in GitHub Actions. The fuller account is in the Acknowledgments of the manuscript (doc/paper.tex)."
+
+review:
+  status: "self-assessed"
+  notes: "Checked by the author alone, not independently reviewed. The author reviewed the formal statements in Challenge.lean, the manuscript and the AI-assisted content, as the manuscript states. The mechanical basis is the Lean kernel check (lake build) and the Comparator run of Solution.lean against Challenge.lean in GitHub Actions."
+
+repository:
+  role: substantive-development
+
+related_formalizations: []
+
+main_result:
+  name: geometric_equivalence
+  paper_theorem: thm:geometric
+  statement: For N >= 4, 2N is a sum of two distinct primes if and only if there is M in [1, N - 3] with N - M and N + M both prime, if and only if there is M in [1, N - 3] for which the L-shaped area N^2 - M^2 of nested squares is a semiprime.
+  lean_modules: [PigeonGoldbach.Core, PigeonGoldbach.CitedResults, PigeonGoldbach.Preprints, PigeonGoldbach.Extended, PigeonGoldbach.Centered]
+  cited_not_formalized: [Mikawa's theorem on prime pairs with almost all differences, Siebert's explicit sieve bound, Dusart and Rosser-Schoenfeld prime-counting estimates, Ford-Green-Konyagin-Maynard-Tao long prime gaps, verification of the even Goldbach conjecture up to 4e18]
+
+modules:
+  - name: PigeonGoldbach.Core
+    path: PigeonGoldbach/Core.lean
+    status: formalized
+    notes: "The sets A_N, C_N, D_N, E_N, B_N and semiprimes; Theorem thm:geometric (geometric_equivalence); Proposition prop:intersection (centered_intersection_criterion); Lemma lem:CD-in-E (CD_subset_E, CED_eq_CD); C_N and D_N lie in the parity class B_N (C_D_subset_B); Lemmas lem:gap and lem:gap-top (gap_lower, gap_lower_missing, gap_top, gap_top_missing); the pigeonhole step of Proposition prop:pigeonhole-CE (pigeonhole_CE); |C_N| equals the number of primes 3 <= P <= N - 1 (card_C); the half-difference supply of Corollary cor:half-difference-baseline (card_E_ge); the shift form of Corollary cor:goldbach-diff (mem_E_shift); the step of Proposition prop:verified (centered_of_partition); the criterion H(N) > 0 (H_pos_iff); the counting steps of Corollary cor:goldbach-diff (card_C_le_CE_add, card_CE_le); pairs of primes give elements of E_N (mem_E_of_pair); the primes in (N, 2N) number at most |E_N| + 1 (card_E_ge_Ioo); pigeonhole_CE_of_H; the finite form of Theorem thm:cramer and Corollary cor:long-gaps (gap_card_missing, gap_card_consecutive, cramer_bound); the combinatorial part of Theorem thm:positive-proportion (cs_count, T_ge_pairs, card_lt_pairs, V_le_quad, positive_proportion_of_bounds); and the small cases of Section subsec:small (small_cases); and the case M = 0 of the open questions (zero_case, classical_iff_distinct); the centered witness of M in C_N ∩ D_N (CD_iff_centered_witness) and R(2N) <= |C_N| (card_CD_le_primes); the equivalence of the conjecture with the centered tail N > 2e18 from the cited verification (Proposition prop:tail is distinct_goldbach_of_tail; Hypotheses hyp:half-difference-density and hyp:centered are the statements 0 < H(N) (H_pos_iff) and R(2N) > 0 (distinct_goldbach_iff_tail); distinct_goldbach_iff_tail and distinct_goldbach_of_tail in CitedResults; one_le_kappa and main_term_ge for the main term; HL, HLintegral_ge and HL_ge for the Hardy-Littlewood prediction)."
+  - name: PigeonGoldbach.CitedResults
+    path: PigeonGoldbach/CitedResults.lean
+    status: axiomatized_as_hypotheses
+    notes: "Explicit hypotheses (propositions, not axioms) for the cited results: Siebert's sieve bound (SiebertBound, Proposition prop:siebert), Dusart's bounds (DusartUpper, DusartLower, DusartShortInterval), the Rosser-Schoenfeld bounds (RosserSchoenfeldPi, RosserSchoenfeldDyadic) and the verification of the even Goldbach conjecture up to 4e18 (GoldbachVerification). Proved from them: the number of odd primes is pi(X) - 1 (card_oddPrimes_add_one); T > (s - 2)^2/2 with s = X/log X (T_lower_of_RS); the conditional lower bound for the proportion of N with R(2N) >= 1 (positive_proportion_of_cited); and R(2N) >= 1 for 4 <= N <= 2e18 given the verification and the computed range N <= 9781 (verified_range)."
+  - name: PigeonGoldbach.Preprints
+    path: PigeonGoldbach/Preprints.lean
+    status: axiomatized_as_hypotheses
+    notes: "Explicit hypotheses (propositions, not axioms) for Theorems 1 and 3 of Pintz-Althofer arXiv:2610.15559 (PintzAlthoferTheorem1, PintzAlthoferTheorem3), Theorem 3.1, Theorem 4.3, Theorem 5.1 and Proposition 6.4 of Bhowmik-Grimmelt arXiv:2607.27282 (HardyLittlewoodConditional, ChudakovVdCEstermann, MontgomeryVaughan, PintzUnconditional), the prime-pair upper bound of Lichtman and Johnston-Trudgian arXiv:2605.17825 (GoldbachUpperBound), Theorem 1 of Johnston-Trudgian (JohnstonTrudgianTheorem1) and the generalized Riemann hypothesis H_{1/2} of Alpoge's Lean proof (GRHDirichlet = ZeroFreeHalfPlane (1/2)). Proved: the exponent arithmetic of g(theta) (gExp_eq, gExp_half, gExp_five_eighths, gExp_two_thirds, gExp_strictMonoOn), Proposition prop:E-half, the exceptional-set exponents 1/2 and 7/12 from H_{1/2} (exceptional_half, exceptional_half_of_HL, exceptional_seven_twelfths), Corollary cor:cnt-GRH (cnt_add_distinctExceptional, cnt_lower_of_exceptional), Proposition prop:E-distinct, the comparison of the exceptional sets for two primes and for two distinct primes (classical_iff_distinct_of_not_prime, distinctExceptional_subset, card_distinctExceptional_le), Proposition prop:R-upper, 2 R(2N) <= G(2N) and the upper bound for R(2N) (two_mul_R_le_G, R_upper_of_goldbach_upper), the monotonicity of the Linnik-Goldbach statement with linnik_six and linnik_seven, and the range 10 <= n <= 4e18+6 of the six-power representation from the cited verification (sixPowerRep_of_verification, sixPowerRep_outside_gap, sixPowerRep_complete, sixPowerRep_equal_powers)."
+  - name: PigeonGoldbach.Extended
+    path: PigeonGoldbach/Extended.lean
+    status: formalized
+    notes: "The extended sets with M = 0 (Aext, Cext, Dext, Eext, Rext); Proposition prop:M-zero (zero_mem_CDext_iff, zero_mem_Eext_iff, CDext_eq, Rext_eq) and classical_iff_Rext."
+  - name: PigeonGoldbach.Centered
+    path: PigeonGoldbach/Centered.lean
+    status: formalized
+    notes: "The centered statistic HR N = log^2(2N) - ((N - 3) - R(2N)); R(2N) <= (N - 1)/2 (R_le_half, card_oddPrimes_le); log^2(2N) < N/2 - 3 for N >= 64 (log_sq_lt); Proposition prop:HR-negative for N >= 64 (HR_neg_of_ge_64); Corollary cor:JR (JR, Fc, JR_pos_iff, JR_const, F_gt_of_JR_pos, JR_Fc_pos_of_HL, R_pos_of_JR_Fc_pos). The values 34 <= N <= 63 are covered by the computation of Table tab:centered."
+
+unformalized_in_lean:
+  - Propositions prop:mikawa and prop:almost-all and Corollary cor:goldbach-diff (asymptotic statements) rest on Mikawa's theorem on prime pairs with almost all differences and are not formalized; only the shift form of Corollary cor:goldbach-diff and the count of C_N are
+  - Theorem thm:linear (|E_N| > N/760 for N >= 3275), Lemma lem:energy, Lemma lem:energy-bound and the explicit constants of Theorem thm:positive-proportion (the bound T > (s - 2)^2/2, the bound on V from Siebert's inequality and the final estimate X/2382) use the energy identity, Siebert's sieve bound and explicit estimates of the prime-counting function
+  - "The explicit inequalities with logarithms: Lemma lem:elementary, Proposition prop:HR-negative for 34 <= N <= 63 (computation only; N >= 64 is formalized in Centered), the estimate |C_N| > log^2(2N) for N >= 356, Proposition prop:many-upper and Corollary cor:long-gaps (the real-analysis estimates and the cited theorems of Dusart, Rosser-Schoenfeld and Ford-Green-Konyagin-Maynard-Tao); Proposition prop:pigeonhole-CE is formalized only in its combinatorial form"
+  - Proposition prop:verified depends on the cited verification of the even Goldbach conjecture up to 4e18 and on the computation of Section sec:computational; only the step from a partition 2N = p + q with p < N to an element of C_N ∩ D_N is formalized
+  - Propositions prop:centering-data and prop:third-data are consequences of the computed Tables tab:family, tab:pmin, tab:defect and tab:third (scripts centering_stats.py and centering_third.py); the inequality HL(2N) >= omega (2N - 4)/log^2(2N) used with them is formalized in CitedResults (HL_ge)
+  - The computations of Section sec:computational (Tables 1 to 4 and the scripts experiment.py, large_range.py, centering_stats.py, centering_jr.py, centering_third.py, linnik_goldbach.py, linnik_reach.py and linnik_threshold.py); Proposition prop:six-powers-ext (reach 4e18 + 63 * 2^61 of the six-power representation) is proved in the text and checked by linnik_reach.py and linnik_threshold.py, and only the range up to 8e18 - 4 with six equal powers is formalized
